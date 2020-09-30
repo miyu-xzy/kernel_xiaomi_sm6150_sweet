@@ -24,9 +24,6 @@
 #include <linux/input.h>
 #include <linux/time.h>
 #include <linux/battery_saver.h>
-#include <uapi/linux/sched/types.h>
-
-#include <linux/sched/rt.h>
 
 struct cpu_sync {
 	int cpu;
