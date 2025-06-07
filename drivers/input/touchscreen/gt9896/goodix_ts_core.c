@@ -1147,7 +1147,7 @@ static void goodix_ts_report_finger(struct input_dev *dev,
 			input_mt_slot(dev, i);
 			input_mt_report_slot_state(dev, MT_TOOL_FINGER, false);
 			if (__test_and_clear_bit(i, &core_data->touch_id)) {
-				ts_debug("finger report leave:%d", i);
+				ts_info("finger report leave:%d", i);
 				pre_coords[i].status = 0;
 			}
 			continue;
@@ -1167,13 +1167,13 @@ static void goodix_ts_report_finger(struct input_dev *dev,
 				touch_data->coords[i].y - pre_coords[i].y) &&
 				test_bit(i, &core_data->touch_id) &&
 				pre_coords[i].status == 0) {
-			ts_debug("finger report move:%d", i);
+			ts_notice("finger report move:%d", i);
 			pre_coords[i].status = 1;
 		}
 		pre_coords[i].x = (u16)touch_data->coords[i].x;
 		pre_coords[i].y = (u16)touch_data->coords[i].y;
 		if (!__test_and_set_bit(i, &core_data->touch_id)) {
-				ts_debug("finger report press:%d", i);
+				ts_info("finger report press:%d", i);
 		}
 		/*ts_info("Report x=%d, y=%d, touch_major=%d, overlapping_area=%d",
                        touch_data->coords[i].x, touch_data->coords[i].y,
@@ -2179,7 +2179,7 @@ static int goodix_power_supply_event(struct notifier_block *nb, unsigned long ev
 }
 
 /**
- * goodix_ts_fb_notifier_callback - Framebuffer notifier callback
+ * goodix_ts_fb_notifier_callback - Framebuffer notifier callbackAdd commentMore actions
  * Called by kernel during framebuffer blanck/unblank phrase
  */
 int goodix_ts_fb_notifier_callback(struct notifier_block *self,
@@ -2200,7 +2200,7 @@ int goodix_ts_fb_notifier_callback(struct notifier_block *self,
 		} else if (event == DRM_EARLY_EVENT_BLANK && (blank == DRM_BLANK_POWERDOWN ||
 			blank == DRM_BLANK_LP1 || blank == DRM_BLANK_LP2)) {
 			ts_notice("notifier tp event:%d, code:%d.", event, blank);
-			ts_info("touchpanel suspend by %s", blank == DRM_BLANK_POWERDOWN ? "blank" : "doze");
+			ts_info("touchpanel suspend by %s", blank == MSM_DRM_BLANK_POWERDOWN ? "blank" : "doze");
 			queue_work(core_data->event_wq, &core_data->suspend_work);
 		}
 	}
@@ -2342,7 +2342,7 @@ int goodix_ts_stage2_init(struct goodix_ts_core *core_data)
 #ifdef CONFIG_DRM
 	core_data->fb_notifier.notifier_call = goodix_ts_fb_notifier_callback;
 	if (drm_register_client(&core_data->fb_notifier)) {
-		ts_err("Failed to register fb notifier client:%d", r);
+		ts_err("Failed to register drm notifier client:%d", r);
 	} else {
 		ts_info("success register fb notifier client");
 	}
@@ -3330,7 +3330,7 @@ out:
 			gpio_direction_output(ts_device->board_data.irq_gpio, 0);
 		}
 		goodix_ts_power_off(core_data);
-		if (core_data->fb_notifier.notifier_call)
+		if (core_data->fb_notifier.notifier_call)Add commentMore actions
 			drm_unregister_client(&core_data->fb_notifier);
 		atomic_set(&core_data->initialized, 0);
 		goodix_modules.core_data = core_data;
