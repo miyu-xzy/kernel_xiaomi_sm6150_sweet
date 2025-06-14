@@ -1196,13 +1196,13 @@ SYSCALL_DEFINE1(newuname, struct new_utsname __user *, name)
 	memcpy(&tmp, utsname(), sizeof(tmp));
 #ifdef CONFIG_ANDROID_SPOOF_KERNEL_VERSION_FOR_BPF
     if (is_bpf_spoof_enabled()) {
-  	  (!strncmp(current->comm, "bpfloader", 9) ||
- 	   !strncmp(current->comm, "netbpfload", 10) ||
- 	   !strncmp(current->comm, "netd", 4)) {
+	if (!strncmp(current->comm, "bpfloader", 9) ||
+	   !strncmp(current->comm, "netbpfload", 10) ||
+	   !strncmp(current->comm, "netd", 4)) {
 	    strcpy(tmp.release, "5.4.294");
-		pr_debug("fake uname: %s/%d release=%s\n",
+	    pr_debug("fake uname: %s/%d release=%s\n",
 		current->comm, current->pid, tmp.release);
-	 }
+	  }
 	}
 #endif
 // make sure bpf uname spoof is prioritized
